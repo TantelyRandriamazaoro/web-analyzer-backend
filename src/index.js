@@ -34,8 +34,8 @@ app.post("/analyze", (req, res) => {
   }
 });
 
-app.post("/test", (req, res) => {
-  res.send(req.body);
+app.post("/", (req, res) => {
+  res.send("");
 })
 
-app.listen(6006, () => console.log("listening to port 3000"));
+app.listen(8080, () => console.log("listening to port 3000"));
