@@ -5,6 +5,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "metrics",
     category: "performance",
@@ -19,24 +20,11 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "diagnostics",
     category: "performance",
     title: "Diagnostics",
-    failedTitle: "You can improve your budget here",
-    description:
-      "These checks highlight opportunities to improve the overall code health of your web app.",
-  },
-  "budgets-custom": {
-    brief: {
-      passed: 0,
-      failed: 0,
-      warning: 0,
-      informative: 0,
-    },
-    id: "budgets",
-    category: "performance",
-    title: "Budgets",
     failedTitle: "You can improve your budget here",
     description:
       "These checks highlight opportunities to improve the overall code health of your web app.",
@@ -47,6 +35,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "load-opportunities",
     category: "performance",
@@ -61,6 +50,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "best-practices-general",
     category: "best-practices",
@@ -75,6 +65,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "best-practices-browser-compat",
     category: "best-practices",
@@ -90,6 +81,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "best-practices-ux",
     category: "best-practices",
@@ -105,6 +97,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "best-practices-trust-safety",
     category: "best-practices",
@@ -119,6 +112,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "seo-mobile",
     category: "seo",
@@ -133,6 +127,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "seo-content",
     category: "seo",
@@ -148,6 +143,7 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
+      notApplicable: 0
     },
     id: "seo-crawl",
     category: "seo",

@@ -169,14 +169,15 @@ module.exports = {
         id: "long-tasks",
         weight: 0,
         group: "diagnostics",
-      }
+      },
     ],
     brief: {
       passed: 0,
       failed: 0,
       warning: 0,
       informative: 0,
-    }
+      notApplicable: 0,
+    },
   },
   "best-practices-custom": {
     id: "best-practices",
@@ -261,7 +262,8 @@ module.exports = {
       failed: 0,
       warning: 0,
       informative: 0,
-    }
+      notApplicable: 0,
+    },
   },
   "seo-custom": {
     id: "seo",
@@ -341,13 +343,14 @@ module.exports = {
         id: "tap-targets",
         weight: 1,
         group: "seo-mobile",
-      }
+      },
     ],
     brief: {
       passed: 0,
       failed: 0,
       warning: 0,
       informative: 0,
-    }
+      notApplicable: 0,
+    },
   },
 };

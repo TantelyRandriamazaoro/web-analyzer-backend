@@ -9,12 +9,14 @@ module.exports = (data) => {
 
   // Loop thru each category, then thru each auditRefs to transform an audit
   categories.forEach((category) => {
+    category.id = category.id.split("-custom")[0];
     category.auditRefs.forEach((auditRef) => {
       const audit = audits.find((el) => el.id === auditRef.id);
       const group = groups.find((el) => el.id == auditRef.group);
-      
+
       audit.group = group == undefined ? null : group.id;
       audit.weight = auditRef.weight;
+      audit.category = category.id;
 
       switch (audit.scoreDisplayMode) {
         case "binary":
@@ -28,13 +30,15 @@ module.exports = (data) => {
           break;
 
         case "informative":
-          audit.status = "informative";
+          audit.status = audit.scoreDisplayMode;
+
+        case "notApplicable":
+          audit.status = audit.scoreDisplayMode;
+
         default:
-          audit.status = "informative";
           break;
       }
 
-      category.id = category.id.split("-custom")[0];
       category.brief[audit.status] += 1;
       group.brief[audit.status] += 1;
     });

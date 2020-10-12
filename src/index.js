@@ -2,6 +2,7 @@ const express = require("express");
 const { Worker, isMainThread } = require("worker_threads");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 
@@ -34,10 +35,13 @@ app.post("/analyze", (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World!</h1>");
+app.post("/test", (req, res) => {
+  setTimeout(() => {
+    res.send(req.body);
+    res.end();
+  }, 3000);
 });
 
-app.listen(process.env.PORT || 3000, () =>
+app.listen(process.env.PORT || 6006, () =>
   console.log("listening to port 3000")
 );
