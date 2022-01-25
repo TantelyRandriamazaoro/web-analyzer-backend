@@ -17,7 +17,14 @@ const processResult = require("./transform");
     const config = await _config();
 
     const chrome = await chromeLauncher.launch(
-      { chromeFlags: ["--headless"] },
+      {
+        chromeFlags: [
+          "--headless",
+          "--no-sandbox",
+          "--disable-gpu",
+          "--disable-dev-shm-usage"
+        ]
+      },
       config
     );
 
