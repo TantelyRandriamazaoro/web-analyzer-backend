@@ -1,48 +1,50 @@
-const patches = require("../config/audits.config");
-const groupsPatches = require("../config/groups.config");
+const { audit } = require("lighthouse/lighthouse-core/audits/audit");
 
 module.exports = (data) => {
   // Transform object data into array of objects
   let audits = Object.values(data.audits);
   let categories = Object.values(data.categories);
-  let groups = Object.values(groupsPatches);
 
-  // Loop thru each category, then thru each auditRefs to transform an audit
-  categories.forEach((category) => {
-    category.id = category.id.split("-custom")[0];
-    category.auditRefs.forEach((auditRef) => {
-      const audit = audits.find((el) => el.id === auditRef.id);
-      const group = groups.find((el) => el.id == auditRef.group);
+  // Loop thru each audit to get completion statuses based on score
+  audits.forEach((audit) => {
+    switch (audit.scoreDisplayMode) {
+      case "binary":
+        audit.status = audit.score == 1 ? "passed" : "failed";
+        break;
 
-      audit.group = group == undefined ? null : group.id;
-      audit.weight = auditRef.weight;
-      audit.category = category.id;
+      case "numeric":
+        if (audit.score >= 0.8) audit.status = "passed";
+        if (audit.score < 0.8 && audit.score >= 0.5) audit.status = "warning";
+        if (audit.score < 0.5) audit.status = "failed";
+        break;
 
-      switch (audit.scoreDisplayMode) {
-        case "binary":
-          audit.status = audit.score == 1 ? "passed" : "failed";
-          break;
+      case "informative":
+        audit.status = audit.scoreDisplayMode;
 
-        case "numeric":
-          if (audit.score >= 0.8) audit.status = "passed";
-          if (audit.score < 0.8 && audit.score >= 0.5) audit.status = "warning";
-          if (audit.score < 0.5) audit.status = "failed";
-          break;
+      case "notApplicable":
+        audit.status = audit.scoreDisplayMode;
 
-        case "informative":
-          audit.status = audit.scoreDisplayMode;
-
-        case "notApplicable":
-          audit.status = audit.scoreDisplayMode;
-
-        default:
-          break;
-      }
-
-      category.brief[audit.status] += 1;
-      group.brief[audit.status] += 1;
-    });
+      default:
+        break;
+    }
   });
 
-  return { audits, categories, groups };
+  // Loop thru categories to merge audit results into category.auditRefs for easier consumption.
+  // And generate brief statuses
+  categories.forEach((category) => {
+
+    // Removes '-custom' from caegory.id since it is not needed for consumption
+    category.id = category.id.split("-custom")[0];
+
+    category.auditRefs = category.auditRefs.map((auditRef) => {
+      const auditResult = audits.find((audit) => audit.id == auditRef.id);
+      return { ...auditRef, ...auditResult };
+    });
+
+    category.auditRefs.forEach((audit) => {
+      category.brief[audit.status] += 1;
+    })
+  });
+
+  return categories;
 };

@@ -1,11 +1,11 @@
-const categories = require("./categories.config");
-const groups = require("./groups.config");
+const getCategories = require("./categories.config");
+const constants = require("lighthouse/lighthouse-core/config/constants")
 
-module.exports = {
+module.exports = async () => ({
   extends: "lighthouse:default",
   settings: {
-    onlyCategories: ["performance-custom", "seo-custom", "best-practices-custom"],
+    throttling: constants.throttling.desktopDense4G,
+    onlyCategories: Object.keys(await getCategories()),
   },
-  categories,
-  groups
-};
+  categories: await getCategories(),
+});

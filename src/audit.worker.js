@@ -1,34 +1,44 @@
 const lighthouse = require("lighthouse");
 const chromeLauncher = require("chrome-launcher");
-const config = require("./config");
+const _config = require("./config");
 const { workerData, parentPort } = require("worker_threads");
 
 const processResult = require("./transform");
 
-const token = Math.random(2);
-
 (async () => {
+
   parentPort.postMessage({
     data: null,
-    token,
+    token: workerData.url,
     status: 0,
   });
 
-  const chrome = await chromeLauncher.launch({ chromeFlags: ["--headless"] });
-  const options = {
-    logLevel: "info",
-    output: "json",
-    port: chrome.port,
-  };
+  try {
+    const config = await _config();
 
-  const result = await lighthouse(workerData.url, options, config);
-  chrome.kill();
+    const chrome = await chromeLauncher.launch(
+      { chromeFlags: ["--headless"] },
+      config
+    );
 
-  const transformed = processResult(JSON.parse(result.report));
+    const options = {
+      logLevel: "info",
+      output: "json",
+      port: chrome.port,
+    };
 
-  parentPort.postMessage({
-    data: transformed,
-    token,
-    status: 200,
-  });
+    const result = await lighthouse(workerData.url, options, config);
+    chrome.kill();
+
+    const data = processResult(JSON.parse(result.report));
+
+    parentPort.postMessage({
+      data,
+      token: workerData.url,
+      status: 200,
+    });
+  } catch (err) {
+    throw err;
+  }
+
 })();
