@@ -26,8 +26,6 @@ COPY . /usr/src
 # install dependencies
 RUN npm install
 
-ENV STORYBLOK_TOKEN=06ZZrAVvc9xHEn5MYxhSBgtt
-
 # start app
 EXPOSE 6006
 CMD npm run start
