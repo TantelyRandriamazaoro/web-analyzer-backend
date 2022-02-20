@@ -5,10 +5,12 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mcache = require('memory-cache');
 const app = express();
+const axios = require('axios');
+
 
 dotenv.config();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const cache = (duration) => {
   return (req, res, next) => {
@@ -27,6 +29,22 @@ const cache = (duration) => {
     }
   }
 }
+
+app.post("/collect", (req, res) => {
+  console.log(req.body);
+  const website = req.body["Website"].replace(/(^\w+:|^)\/\//, '').replace(/ /g, '');
+
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  axios.post(
+    process.env.FLOW_COLLECT_ENDPOINT, req.body,
+    { headers }
+  ).then((_) => {
+    res.redirect(process.env.WEB_ANALYZER_CLIENT + "?q=" + website);
+  })
+});
 
 app.get("/", cache(540), (req, res, next) => {
 
