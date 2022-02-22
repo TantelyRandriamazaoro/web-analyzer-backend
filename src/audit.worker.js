@@ -1,19 +1,21 @@
 const lighthouse = require("lighthouse");
 const chromeLauncher = require("chrome-launcher");
 const _config = require("./config");
+const axios = require("axios");
 const { workerData, parentPort } = require("worker_threads");
 
-const processResult = require("./transform");
+const merge = require("./transform/merge");
 
 (async () => {
 
   parentPort.postMessage({
     data: null,
-    token: workerData.url,
+    token: workerData.Website,
     status: 0,
   });
 
   try {
+
     const config = await _config();
 
     const chrome = await chromeLauncher.launch(
@@ -34,14 +36,14 @@ const processResult = require("./transform");
       port: chrome.port,
     };
 
-    const result = await lighthouse(workerData.url, options, config);
+    const { report } = await lighthouse(workerData.Website, options, config);
     chrome.kill();
 
-    const data = processResult(JSON.parse(result.report));
+    const data = await merge(report, workerData);
 
     parentPort.postMessage({
       data,
-      token: workerData.url,
+      token: workerData.Website,
       status: 200,
     });
   } catch (err) {

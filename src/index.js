@@ -10,6 +10,7 @@ const axios = require('axios');
 
 dotenv.config();
 app.use(cors());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const cache = (duration) => {
@@ -30,19 +31,38 @@ const cache = (duration) => {
   }
 }
 
-app.post("/collect", (req, res) => {
+app.post("/lead", (req, res) => {
   console.log(req.body);
-  const website = req.body["Website"].replace(/(^\w+:|^)\/\//, '').replace(/ /g, '');
 
   const headers = {
     'Content-Type': 'application/json'
   };
 
   axios.post(
-    process.env.FLOW_COLLECT_ENDPOINT, req.body,
+    process.env.FLOW_COLLECT_LEAD_ENDPOINT, req.body,
+    { headers }
+  ).then(() => {
+    res.send();
+  }).catch(() => {
+    res.statusCode = 500;
+    res.end();
+  })
+});
+
+app.post("/analyze", (req, res) => {
+  console.log(req.body);
+  const Website = req.body["Website"].replace(/(^\w+:|^)\/\//, '').replace(/ /g, '');
+  const TemporaryEmail = "lead@" + Website;
+
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  axios.post(
+    process.env.FLOW_COLLECT_WEBSITE_ENDPOINT, { Website, TemporaryEmail },
     { headers }
   ).then((_) => {
-    res.redirect(process.env.WEB_ANALYZER_CLIENT + "?q=" + website);
+    res.redirect(process.env.WEB_ANALYZER_CLIENT + "?q=" + Website);
   })
 });
 
@@ -51,7 +71,7 @@ app.get("/", cache(540), (req, res, next) => {
   // Splitting the process into multiple worker in case of multiple requests received
   if (isMainThread) {
     const worker = new Worker("./src/audit.worker.js", {
-      workerData: { url: "https://" + req.query.q },
+      workerData: { Website: "https://" + req.query.q },
     });
 
     worker.on("message", (message) => {
