@@ -71,11 +71,9 @@ To run this project locally:
    cd <repository-folder>
    ```
 4. Set up environment variables:
-   - `GOOGLE_API_KEY`: Your Google API Key for accessing Lighthouse.
    - `FLOW_COLLECT_LEAD_ENDPOINT`: Zoho Flow endpoint for collecting leads.
    - `FLOW_COLLECT_WEBSITE_ENDPOINT`: Zoho Flow endpoint for collecting website data.
-   - `CACHE_DURATION`: Cache expiry time (e.g., `3600` seconds).
-   - `STORYBLOK_API_KEY`: API Key for accessing Storyblok CMS.
+   - `STORYBLOK_TOKEN`: API Key for accessing Storyblok CMS.
    - Other configuration details as required (see `.env.example` file).
 
 > **Note**: Due to the business-specific dependencies (Zoho Flow and Storyblok CMS), running this project as-is might not be feasible. However, for a challenge, you can mock the Zoho Flow endpoints and Storyblok category data to simulate the behavior of the system.
